@@ -1,16 +1,38 @@
-# This is a sample Python script.
+import pygame
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+WIDTH, HEIGHT = 1500, 800
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Podarn")
+
+WHITE = (255, 255, 255)
+
+FPS = 60
+
+PLAYER = pygame.image.load(os.path.join('Assets', 'player.jpg'))
+MR_HAPPY = pygame.image.load(os.path.join('Assets', 'mrhappy.jpg'))
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def draw_window():
+    WIN.fill(WHITE)
+    WIN.blit(PLAYER, (100, 100))
+    WIN.blit(MR_HAPPY, (300, 300))
+    pygame.display.update()
 
 
-# Press the green button in the gutter to run the script.
+def main():
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        draw_window()
+
+    pygame.quit()
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
