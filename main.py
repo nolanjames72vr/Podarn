@@ -10,17 +10,33 @@ WHITE = (255, 255, 255)
 FPS = 60
 
 PLAYER = pygame.image.load(os.path.join('Assets', 'player.jpg'))
+PLAYER_WIDTH, PLAYER_HEIGHT = 50, 50
 MR_HAPPY = pygame.image.load(os.path.join('Assets', 'mrhappy.jpg'))
+MR_HAPPY_WIDTH, MR_HAPPY_HEIGHT = 75, 75
 
 
-def draw_window():
+def draw_window(playerhitbox, mrhappyhitbox):
     WIN.fill(WHITE)
-    WIN.blit(PLAYER, (100, 100))
-    WIN.blit(MR_HAPPY, (300, 300))
+    WIN.blit(PLAYER, (playerhitbox.x, playerhitbox.y))
+    WIN.blit(MR_HAPPY, (mrhappyhitbox.x, mrhappyhitbox.y))
     pygame.display.update()
 
 
+def player_movement(keys_pressed, playerhitbox):
+    if keys_pressed[pygame.K_a]:
+        playerhitbox.x -= 5
+    if keys_pressed[pygame.K_d]:
+        playerhitbox.x += 5
+    if keys_pressed[pygame.K_w]:
+        playerhitbox.y -= 5
+    if keys_pressed[pygame.K_s]:
+        playerhitbox.y += 5
+
+
 def main():
+    playerhitbox = pygame.Rect(100, 400, PLAYER_WIDTH, PLAYER_HEIGHT)
+    mrhappyhitbox = pygame.Rect(700, 400, MR_HAPPY_WIDTH, MR_HAPPY_HEIGHT)
+
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -28,8 +44,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
-        draw_window()
+        keys_pressed = pygame.key.get_pressed()
+        player_movement(keys_pressed, playerhitbox)
+        draw_window(playerhitbox, mrhappyhitbox)
 
     pygame.quit()
 
