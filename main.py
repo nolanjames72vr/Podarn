@@ -23,13 +23,13 @@ def draw_window(playerhitbox, mrhappyhitbox):
 
 
 def player_movement(keys_pressed, playerhitbox):
-    if keys_pressed[pygame.K_a]:
+    if keys_pressed[pygame.K_a] and playerhitbox.x > 0:
         playerhitbox.x -= 5
-    if keys_pressed[pygame.K_d]:
+    if keys_pressed[pygame.K_d] and playerhitbox.x < WIDTH - PLAYER_WIDTH:
         playerhitbox.x += 5
-    if keys_pressed[pygame.K_w]:
+    if keys_pressed[pygame.K_w] and playerhitbox.y > 0:
         playerhitbox.y -= 5
-    if keys_pressed[pygame.K_s]:
+    if keys_pressed[pygame.K_s] and playerhitbox.y < HEIGHT - PLAYER_WIDTH:
         playerhitbox.y += 5
 
 
