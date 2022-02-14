@@ -50,8 +50,14 @@ class Square:
         self.rect.y = random.randrange(70, HEIGHT-20)
 
 
+class MrHappy:
+    def __init__(self, sped_x, sped_y):
+        self.sped_x = sped_x
+        self.sped_y = sped_y
+
+
 def draw_window(playerhitbox, mrhappyhitbox, squares, player_health, brown_count, grey_count, orange_count,
-                yellow_count, purple_count, blue_count, black_count):
+                yellow_count, purple_count, blue_count, black_count, square_list):
     WIN.fill(WHITE)
     progress_text = HEALTH_FONT.render("Progress: Not Much", True, BLACK)
     WIN.blit(progress_text, (10, 10))
@@ -69,8 +75,30 @@ def draw_window(playerhitbox, mrhappyhitbox, squares, player_health, brown_count
     WIN.blit(blue_text, (30, progress_text.get_height() + 10 + brown_text.get_height() * 5))
     black_text = PROGRESS_FONT.render("Black: " + str(black_count), True, BLACK)
     WIN.blit(black_text, (30, progress_text.get_height() + 10 + brown_text.get_height() * 6))
+
     player_health_text = HEALTH_FONT.render("Health: " + str(player_health), True, BLACK)
     WIN.blit(player_health_text, (WIDTH - player_health_text.get_width() - 10, 10))
+    brown_text_goal = PROGRESS_FONT.render(str(square_list[0]) + " :Brown", True, BLACK)
+    WIN.blit(brown_text_goal, (WIDTH - brown_text_goal.get_width() - 30, progress_text.get_height() + 10))
+    grey_text_goal = PROGRESS_FONT.render(str(square_list[1]) + " :Grey", True, BLACK)
+    WIN.blit(grey_text_goal, (WIDTH - grey_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                              brown_text.get_height()))
+    orange_text_goal = PROGRESS_FONT.render(str(square_list[2]) + " :Orange", True, BLACK)
+    WIN.blit(orange_text_goal, (WIDTH - orange_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                                brown_text.get_height() * 2))
+    yellow_text_goal = PROGRESS_FONT.render(str(square_list[3]) + " :Yellow", True, BLACK)
+    WIN.blit(yellow_text_goal, (WIDTH - yellow_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                                brown_text.get_height() * 3))
+    purple_text_goal = PROGRESS_FONT.render(str(square_list[4]) + " :Purple", True, BLACK)
+    WIN.blit(purple_text_goal, (WIDTH - purple_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                                brown_text.get_height() * 4))
+    blue_text_goal = PROGRESS_FONT.render(str(square_list[5]) + " :Blue", True, BLACK)
+    WIN.blit(blue_text_goal, (WIDTH - blue_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                              brown_text.get_height() * 5))
+    black_text_goal = PROGRESS_FONT.render(str(square_list[6]) + " :Black", True, BLACK)
+    WIN.blit(black_text_goal, (WIDTH - black_text_goal.get_width() - 30, progress_text.get_height() + 10 +
+                               brown_text.get_height() * 6))
+
     WIN.blit(PLAYER, (playerhitbox.x, playerhitbox.y))
     for square in squares:
         pygame.draw.rect(WIN, square.color, square.rect)
@@ -87,6 +115,15 @@ def player_movement(keys_pressed, playerhitbox):
         playerhitbox.y -= 5
     if keys_pressed[pygame.K_s] and playerhitbox.y < HEIGHT - PLAYER_WIDTH:
         playerhitbox.y += 5
+
+
+def happy_movement(mrhappyhitbox, mrhappy):
+    mrhappyhitbox.x += mrhappy.sped_x
+    mrhappyhitbox.y += mrhappy.sped_y
+    if mrhappyhitbox.x < 0 or mrhappyhitbox.x > WIDTH-75:
+        mrhappy.sped_x = -mrhappy.sped_x
+    if mrhappyhitbox.y < 0 or mrhappyhitbox.y > HEIGHT-75:
+        mrhappy.sped_y = -mrhappy.sped_y
 
 
 def detect_hit(playerhitbox, mrhappyhitbox, squares):
@@ -129,6 +166,7 @@ def main():
 
     player_health = 100
     mr_happy_health = 500
+    mrhappy = MrHappy(3, 3)
 
     brown_count = 0
     grey_count = 0
@@ -137,6 +175,15 @@ def main():
     purple_count = 0
     blue_count = 0
     black_count = 0
+
+    list_num = 1
+
+    square_list1 = [2, 4, 9, 1, 5, 3, 7]
+    square_list2 = [6, 2, 8, 3, 4, 6, 1]
+    square_list3 = [7, 3, 6, 4, 1, 2, 2]
+    square_list4 = [3, 7, 2, 8, 1, 9, 4]
+
+    square_list = square_list1
 
     squares = generate_squares()
 
@@ -156,9 +203,18 @@ def main():
                     purple_count = 0
                     blue_count = 0
                     black_count = 0
-                    print(pygame.mouse.get_pos())
+                    # print(pygame.mouse.get_pos())
                 if event.key == pygame.K_q:
-                    print("BYE")
+                    list_num += 1
+                    if list_num == 2:
+                        square_list = square_list2
+                    if list_num == 3:
+                        square_list = square_list3
+                    if list_num == 4:
+                        square_list = square_list4
+                    if list_num == 5:
+                        list_num = 1
+                        square_list = square_list1
 
             if event.type == HAPPY_HIT:
                 player_health -= 1
@@ -181,11 +237,12 @@ def main():
 
         keys_pressed = pygame.key.get_pressed()
         player_movement(keys_pressed, playerhitbox)
+        happy_movement(mrhappyhitbox, mrhappy)
 
         detect_hit(playerhitbox, mrhappyhitbox, squares)
 
         draw_window(playerhitbox, mrhappyhitbox, squares, player_health, brown_count, grey_count, orange_count,
-                    yellow_count, purple_count, blue_count, black_count)
+                    yellow_count, purple_count, blue_count, black_count, square_list)
 
     pygame.quit()
 
